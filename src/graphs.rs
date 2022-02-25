@@ -49,24 +49,14 @@ mod tests {
 
     #[test]
     fn bfs() {
-        let graph = vec![
-            vec![1, 2],
-            vec![2],
-            vec![0, 3],
-            vec![3]
-        ];
+        let graph = vec![vec![1, 2], vec![2], vec![0, 3], vec![3]];
 
         assert_eq!(graph.bfs(2), vec![2, 0, 3, 1]);
     }
 
     #[test]
     fn dfs() {
-        let graph = vec![
-            vec![1, 2],
-            vec![2],
-            vec![0, 3],
-            vec![3]
-        ];
+        let graph = vec![vec![1, 2], vec![2], vec![0, 3], vec![3]];
 
         assert_eq!(graph.dfs(2), vec![2, 0, 1, 3]);
     }

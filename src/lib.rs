@@ -1,5 +1,5 @@
-mod nqueens;
 mod graphs;
+mod nqueens;
 
 #[cfg(test)]
 mod tests {
