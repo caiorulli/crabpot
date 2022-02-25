@@ -1,3 +1,5 @@
+mod nqueens;
+
 #[cfg(test)]
 mod tests {
     #[test]
