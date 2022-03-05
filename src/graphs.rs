@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use std::collections::VecDeque;
 
 type Vertex = usize;
@@ -9,8 +7,8 @@ type VisitedList = Vec<Vertex>;
 trait Graph {
     fn bfs(&self, source: Vertex) -> VisitedList;
     fn dfs(&self, source: Vertex) -> VisitedList;
-    fn bellman_ford(&self, source: Vertex) -> Vec<(Vertex, i32)>;
-    fn djikstra(&self, source: Vertex) -> Vec<(Vertex, i32)>;
+    fn bellman_ford(&self, source: Vertex) -> Vec<i32>;
+    fn djikstra(&self, source: Vertex) -> Vec<i32>;
 }
 
 impl Graph for AdjList {
@@ -36,13 +34,37 @@ impl Graph for AdjList {
         visited
     }
 
-    fn bellman_ford(&self, _source: Vertex) -> Vec<(Vertex, i32)> {
-        vec![]
+    fn bellman_ford(&self, source: Vertex) -> Vec<i32> {
+        let len = self.len();
+        let mut distances = vec![i32::MAX; len];
+        distances[source] = 0;
+
+        for _ in 0..len + 1 {
+            for u in 0..len {
+                for (v, weight) in self.get(u).unwrap() {
+                    let dist_u = safe_add(*distances.get(u).unwrap(), *weight);
+                    let dist_v = *distances.get(*v).unwrap();
+                    if dist_u < dist_v {
+                        distances[*v] = dist_u;
+                    }
+                }
+            }
+        }
+
+        distances
     }
 
-    fn djikstra(&self, _source: Vertex) -> Vec<(Vertex, i32)> {
+    fn djikstra(&self, _source: Vertex) -> Vec<i32> {
         vec![]
     }
+}
+
+// Not all that safe but does the trick for now
+fn safe_add(a: i32, b: i32) -> i32 {
+    if a == i32::MAX {
+        return a;
+    }
+    a + b
 }
 
 fn dfs_recur(graph: &AdjList, curr_v: Vertex, visited: &mut VisitedList) {
@@ -80,5 +102,18 @@ mod tests {
         ];
 
         assert_eq!(graph.dfs(2), vec![2, 0, 1, 3]);
+    }
+
+    #[test]
+    fn bellman_ford() {
+        let graph = vec![
+            vec![(1, 9), (2, 3)],
+            vec![(2, 6), (4, 2)],
+            vec![(1, 2), (3, 1)],
+            vec![(2, 2), (4, 2)],
+            vec![]
+        ];
+
+        assert_eq!(graph.bellman_ford(0), vec![0, 5, 3, 4, 6]);
     }
 }
